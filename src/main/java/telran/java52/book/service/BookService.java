@@ -1,6 +1,8 @@
 package telran.java52.book.service;
 
+import telran.java52.book.dto.AuthorDto;
 import telran.java52.book.dto.BookDto;
+import telran.java52.book.model.Publisher;
 
 public interface BookService {
 	
@@ -8,4 +10,17 @@ public interface BookService {
 	
 	BookDto findBookByIsbn(String isbn);
 	
+	BookDto removeBook(String isbn);
+	
+	BookDto updateBook(String isbn, String title);
+	
+	BookDto[] findByAuthor(String name);
+	
+	BookDto[] findByPublisher(String name);
+	
+	AuthorDto[] findAuthorsbyBook(String isbn);
+	
+	Publisher[] findPublishersByAuthor(String name);
+	
+	AuthorDto removeAuthor(String name);
 }
