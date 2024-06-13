@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -27,7 +26,7 @@ public class Book implements Serializable {
 	@Id
 	String isbn;
 	String title;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	Set<Author> authors;
 	@ManyToOne
 	Publisher publisher;
