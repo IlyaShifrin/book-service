@@ -73,23 +73,31 @@ public class BookServiceImpl implements BookService {
 	@Transactional(readOnly = true)
 	@Override
 	public BookDto[] findByAuthor(String name) {
-		Author author = authorRepository.findById(name).orElse(null);
-		Set<Author> authors = new HashSet<Author>();
-		authors.add(author);
-							
-		return bookRepository.findByAuthors(authors)
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return author.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toArray(BookDto[]::new);
+		
+		//		Set<Author> authors = new HashSet<Author>();
+//		authors.add(author);
+//							
+//		return bookRepository.findByAuthors(authors)
+//				.map(b -> modelMapper.map(b, BookDto.class))
+//				.toArray(BookDto[]::new);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public BookDto[] findByPublisher(String name) {
-		Publisher publisher = publisherRepository.findById(name).orElse(null);
+		Publisher publisher = publisherRepository.findById(name).orElseThrow(EntityNotFoundException::new);
 		
-		return bookRepository.findByPublisher(publisher)
+		return publisher.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toArray(BookDto[]::new);
+		
+//		return bookRepository.findByPublisher(publisher)
+//				.map(b -> modelMapper.map(b, BookDto.class))
+//				.toArray(BookDto[]::new);
 	}
 
 	@Override
@@ -100,10 +108,12 @@ public class BookServiceImpl implements BookService {
 				.toArray(AuthorDto[]::new);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
-	public Publisher[] findPublishersByAuthor(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public String[] findPublishersByAuthor(String name) {
+		return publisherRepository.findDistinctByBooksAuthorsName(name)
+				.map(Publisher::getPublisherName)
+				.toArray();
 	}
 
 	@Override

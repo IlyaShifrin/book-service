@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -26,7 +27,7 @@ public class Author implements Serializable {
 	@Id
 	String name;
 	LocalDate birthDate;
-	@ManyToMany(mappedBy = "authors")
+	@ManyToMany(mappedBy = "authors", cascade = CascadeType.REMOVE)
 	Set<Book> books;
 	
 	public Author(String name, LocalDate birthDate) {

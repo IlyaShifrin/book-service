@@ -20,7 +20,7 @@ public interface BookService {
 	
 	AuthorDto[] findAuthorsbyBook(String isbn);
 	
-	Publisher[] findPublishersByAuthor(String name);
+	String[] findPublishersByAuthor(String name);
 	
 	AuthorDto removeAuthor(String name);
 }

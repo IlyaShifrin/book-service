@@ -13,8 +13,8 @@ import telran.java52.book.model.Publisher;
 
 public interface BookRepository extends JpaRepository<Book, String> {
 	
-	Stream<Book> findByAuthors(Set<Author> authors);
+//	Stream<Book> findByAuthors(Set<Author> authors);
 	
-	Stream<Book> findByPublisher(Publisher publisher);
+//	Stream<Book> findByPublisher(Publisher publisher);
 	
 }
