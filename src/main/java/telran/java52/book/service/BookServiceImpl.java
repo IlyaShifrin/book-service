@@ -1,6 +1,5 @@
 package telran.java52.book.service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,18 +68,18 @@ public class BookServiceImpl implements BookService {
 		return modelMapper.map(book, BookDto.class);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
 	public Iterable<BookDto> findBooksByAuthor(String name) {
-		return bookRepository.findByAuthorsName(name)
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return author.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toList();
 	}
 
-	@Transactional(readOnly = true)
 	@Override
 	public Iterable<BookDto> findBooksByPublisher(String name) {
-		return bookRepository.findByPublisherPublisherName(name)
+		Publisher publisher = publisherRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return publisher.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toList();
 	}
@@ -93,18 +92,18 @@ public class BookServiceImpl implements BookService {
 				.toList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
-	public List<String> findPublishersByAuthor(String name) {
-		return publisherRepository.findPublishersByAuthor(name);
+	public Iterable<String> findPublishersByAuthor(String name) {
+		return publisherRepository.findDistinctByBooksAuthorsName(name)
+				.map(Publisher::getPublisherName)
+				.toList();
 	}
 
 	@Transactional
 	@Override
 	public AuthorDto removeAuthor(String name) {
 		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
-//		bookRepository.findByAuthorsName(name)
-//						.forEach(b -> bookRepository.delete(b));
-		bookRepository.deleteByAuthorsName(name);
 		authorRepository.deleteById(name);
 		return modelMapper.map(author, AuthorDto.class);
 	}
