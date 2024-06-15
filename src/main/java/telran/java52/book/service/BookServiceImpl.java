@@ -1,6 +1,6 @@
 package telran.java52.book.service;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,7 +57,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public BookDto removeBook(String isbn) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
-		bookRepository.delete(book);
+		bookRepository.deleteById(isbn);
 		return modelMapper.map(book, BookDto.class);
 	}
 
@@ -66,54 +66,47 @@ public class BookServiceImpl implements BookService {
 	public BookDto updateBook(String isbn, String title) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
 		book.setTitle(title);
-		bookRepository.save(book);
 		return modelMapper.map(book, BookDto.class);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public BookDto[] findByAuthor(String name) {
-		Author author = authorRepository.findById(name).orElse(null);
-		Set<Author> authors = new HashSet<Author>();
-		authors.add(author);
-							
-		return bookRepository.findByAuthors(authors)
+	public Iterable<BookDto> findBooksByAuthor(String name) {
+		return bookRepository.findByAuthorsName(name)
 				.map(b -> modelMapper.map(b, BookDto.class))
-				.toArray(BookDto[]::new);
+				.toList();
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public BookDto[] findByPublisher(String name) {
-		Publisher publisher = publisherRepository.findById(name).orElse(null);
-		
-		return bookRepository.findByPublisher(publisher)
+	public Iterable<BookDto> findBooksByPublisher(String name) {
+		return bookRepository.findByPublisherPublisherName(name)
 				.map(b -> modelMapper.map(b, BookDto.class))
-				.toArray(BookDto[]::new);
+				.toList();
 	}
 
 	@Override
-	public AuthorDto[] findAuthorsbyBook(String isbn) {
+	public Iterable<AuthorDto> findBookAuthors(String isbn) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
 		return book.getAuthors().stream()
 				.map(a -> modelMapper.map(a, AuthorDto.class))
-				.toArray(AuthorDto[]::new);
+				.toList();
 	}
 
 	@Override
-	public Publisher[] findPublishersByAuthor(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> findPublishersByAuthor(String name) {
+		return publisherRepository.findPublishersByAuthor(name);
 	}
 
+	@Transactional
 	@Override
 	public AuthorDto removeAuthor(String name) {
-//		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
-//		authorRepository.delete(author);
-//		return modelMapper.map(author, AuthorDto.class);
-		return null;
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+//		bookRepository.findByAuthorsName(name)
+//						.forEach(b -> bookRepository.delete(b));
+		bookRepository.deleteByAuthorsName(name);
+		authorRepository.deleteById(name);
+		return modelMapper.map(author, AuthorDto.class);
 	}
-	
-	
 
 }
