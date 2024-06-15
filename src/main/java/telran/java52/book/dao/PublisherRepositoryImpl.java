@@ -33,9 +33,11 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 		return Optional.ofNullable(em.find(Publisher.class, publisher));
 	}
 
+//	@Transactional
 	@Override
 	public Publisher save(Publisher publisher) {
 		em.persist(publisher);
+//		em.merge(publisher);
 		return publisher;
 	}
 
