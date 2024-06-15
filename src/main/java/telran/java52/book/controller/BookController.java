@@ -1,5 +1,7 @@
 package telran.java52.book.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,23 +42,23 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/author/{name}")
-	public BookDto[] findByAuthor(@PathVariable String name) {
-		return bookService.findByAuthor(name);
+	public Iterable<BookDto> findBooksByAuthor(@PathVariable String name) {
+		return bookService.findBooksByAuthor(name);
 	}
 	
 	@GetMapping("/books/publisher/{name}")
-	public BookDto[] findByPublisher(@PathVariable String name) {
-		return bookService.findByPublisher(name);
+	public Iterable<BookDto> findBooksByPublisher(@PathVariable String name) {
+		return bookService.findBooksByPublisher(name);
 	}
 	
 	@GetMapping("/authors/book/{isbn}")
-	public AuthorDto[] findAuthorsByBook(@PathVariable String isbn) {
-		return bookService.findAuthorsbyBook(isbn);
+	public Iterable<AuthorDto> findBookAuthors(@PathVariable String isbn) {
+		return bookService.findBookAuthors(isbn);
 	}
 	
 	@GetMapping("/publishers/author/{name}")
-	public String[] findPublishersByAuthor(@PathVariable String name) {
-		return null;
+	public List<String> findPublishersByAuthor(@PathVariable String name) {
+		return bookService.findPublishersByAuthor(name);
 	}
 	
 	@DeleteMapping("/author/{name}")
