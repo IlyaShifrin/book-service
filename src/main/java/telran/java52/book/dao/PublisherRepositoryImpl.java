@@ -16,16 +16,21 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 	@PersistenceContext
 	EntityManager em;
 	
+	// Это такой же метод по сути, как метод ниже - findDistinctByBooksAuthorsName?  
 	@Override
 	public List<String> findPublishersByAuthor(String authorName) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Stream<Publisher> findDistinctByBooksAuthorsName(String authorName) {
-		// TODO Auto-generated method stub
-		return null;
+		@SuppressWarnings("unchecked")
+		Stream<Publisher> resList = em.createQuery("select distinct p from Publisher p join p.books b join b.authors a where a.name=?1")
+		.setParameter(1, authorName)
+		.getResultStream();
+		
+		return resList;
 	}
 
 	@Override

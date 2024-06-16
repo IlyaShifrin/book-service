@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,20 +18,30 @@ public class BookRepositoryImpl implements BookRepository {
 	
 	@Override
 	public Stream<Book> findByAuthorsName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		@SuppressWarnings("unchecked")
+		Stream<Book> resList = em.createQuery("select b from Author a join a.books b where a.name=?1")
+		.setParameter(1, name)
+		.getResultStream();
+		
+		return resList;
 	}
 
 	@Override
 	public Stream<Book> findByPublisherPublisherName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		@SuppressWarnings("unchecked")
+		Stream<Book> resList = em.createQuery("select b from Publisher p join p.books b where p.publisherName=?1")
+		.setParameter(1, name)
+		.getResultStream();
+		
+		return resList;
 	}
 
+	// Не нашел где используется этот метод
+	@Transactional
 	@Override
 	public void deleteByAuthorsName(String name) {
-		// TODO Auto-generated method stub
-
+		findByAuthorsName(name)
+			.forEach(b -> em.remove(b));
 	}
 
 	@Override
@@ -46,14 +57,13 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@Override
 	public Optional<Book> findById(String isbn) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		return Optional.ofNullable(em.find(Book.class, isbn));
 	}
 
 	@Override
 	public void deleteById(String isbn) {
-		// TODO Auto-generated method stub
-
+		Book book = em.find(Book.class, isbn);
+		em.remove(book);
 	}
 
 }

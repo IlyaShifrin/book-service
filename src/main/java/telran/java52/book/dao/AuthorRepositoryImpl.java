@@ -28,8 +28,8 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
 	@Override
 	public void deleteById(String name) {
-		// TODO Auto-generated method stub
-
+		Author author = em.find(Author.class, name);
+		em.remove(author);
 	}
 
 }
