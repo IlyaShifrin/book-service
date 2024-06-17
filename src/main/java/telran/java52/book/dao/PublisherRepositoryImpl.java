@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import telran.java52.book.model.Publisher;
 
 @Repository
@@ -19,18 +20,23 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 	// Это такой же метод по сути, как метод ниже - findDistinctByBooksAuthorsName?  
 	@Override
 	public List<String> findPublishersByAuthor(String authorName) {
-		
-		return null;
+		TypedQuery<String> query = em.createQuery("select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name=?1", String.class);
+		query.setParameter(1, authorName);
+		return query.getResultList();
 	}
 
 	@Override
 	public Stream<Publisher> findDistinctByBooksAuthorsName(String authorName) {
-		@SuppressWarnings("unchecked")
-		Stream<Publisher> resList = em.createQuery("select distinct p from Publisher p join p.books b join b.authors a where a.name=?1")
-		.setParameter(1, authorName)
-		.getResultStream();
+		return em.createQuery("select distinct p.publisherName from Book b join b.publisher p join b.authors a where a.name=?1", Publisher.class)
+				.setParameter(1, authorName)
+				.getResultStream();
 		
-		return resList;
+//		@SuppressWarnings("unchecked")
+//		Stream<Publisher> resList = em.createQuery("select distinct p from Publisher p join p.books b join b.authors a where a.name=?1")
+//		.setParameter(1, authorName)
+//		.getResultStream();
+//		
+//		return resList;
 	}
 
 	@Override

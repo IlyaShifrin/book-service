@@ -73,26 +73,26 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Iterable<BookDto> findBooksByAuthor(String name) {
-//		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
-//		return author.getBooks().stream()
-//				.map(b -> modelMapper.map(b, BookDto.class))
-//				.toList();
-		
-		return bookRepository.findByAuthorsName(name)
+		Author author = authorRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return author.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toList();
+		
+//		return bookRepository.findByAuthorsName(name)
+//				.map(b -> modelMapper.map(b, BookDto.class))
+//				.toList();
 	}
 
 	@Override
 	public Iterable<BookDto> findBooksByPublisher(String name) {
-//		Publisher publisher = publisherRepository.findById(name).orElseThrow(EntityNotFoundException::new);
-//		return publisher.getBooks().stream()
-//				.map(b -> modelMapper.map(b, BookDto.class))
-//				.toList();
-		
-		return bookRepository.findByPublisherPublisherName(name)
+		Publisher publisher = publisherRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+		return publisher.getBooks().stream()
 				.map(b -> modelMapper.map(b, BookDto.class))
 				.toList();
+		
+//		return bookRepository.findByPublisherPublisherName(name)
+//				.map(b -> modelMapper.map(b, BookDto.class))
+//				.toList();
 	}
 
 	@Override

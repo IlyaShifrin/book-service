@@ -18,30 +18,25 @@ public class BookRepositoryImpl implements BookRepository {
 	
 	@Override
 	public Stream<Book> findByAuthorsName(String name) {
-		@SuppressWarnings("unchecked")
-		Stream<Book> resList = em.createQuery("select b from Author a join a.books b where a.name=?1")
+		return em.createQuery("select b from Author a join a.books b where a.name=?1", Book.class)
 		.setParameter(1, name)
 		.getResultStream();
-		
-		return resList;
 	}
 
 	@Override
 	public Stream<Book> findByPublisherPublisherName(String name) {
-		@SuppressWarnings("unchecked")
-		Stream<Book> resList = em.createQuery("select b from Publisher p join p.books b where p.publisherName=?1")
-		.setParameter(1, name)
+		return em.createQuery("select b from Publisher p join p.books b where p.publisherName=?1", Book.class)
+		//select b from Book b join b.publisher p where p.publisherName=?1
+				.setParameter(1, name)
 		.getResultStream();
-		
-		return resList;
 	}
 
-	// Не нашел где используется этот метод
 	@Transactional
 	@Override
 	public void deleteByAuthorsName(String name) {
-		findByAuthorsName(name)
-			.forEach(b -> em.remove(b));
+		em.createQuery("delete from Book b where ?1 members of b.authors")
+			.setParameter(1, name)
+			.executeUpdate();
 	}
 
 	@Override
@@ -62,8 +57,7 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@Override
 	public void deleteById(String isbn) {
-		Book book = em.find(Book.class, isbn);
-		em.remove(book);
+		em.remove(em.find(Book.class, isbn));
 	}
 
 }
