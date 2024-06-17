@@ -49,6 +49,7 @@ public class PublisherRepositoryImpl implements PublisherRepository {
 	public Publisher save(Publisher publisher) {
 		em.persist(publisher);
 //		em.merge(publisher);
+//		em.flush();
 		return publisher;
 	}
 
